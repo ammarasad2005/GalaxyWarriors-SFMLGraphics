@@ -2,7 +2,7 @@
 #define MENUSYSTEM_H
 
 #include <SFML/Graphics.hpp>
-#include <vector>
+#include "DynamicArray.h"
 #include <string>
 #include "ColorPalette.h"
 
@@ -69,8 +69,8 @@ case ColorPalette::TOXIC_WASTE:
 
 class MenuSystem {
 private:
-    std::vector<MenuButton> mainMenuButtons;
-    std::vector<ThemeCard> themeCards;
+    DynamicArray<MenuButton> mainMenuButtons;
+    DynamicArray<ThemeCard> themeCards;
     int selectedThemeIndex;
     bool inThemeSelection;
     float animationTimer;
@@ -82,7 +82,7 @@ private:
         float life;
         float size;
     };
-    std::vector<MenuParticle> menuParticles;
+    DynamicArray<MenuParticle> menuParticles;
     
 public:
     MenuSystem();

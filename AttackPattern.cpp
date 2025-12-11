@@ -3,33 +3,33 @@
 #include "EnemyBullet.h"
 #include <cmath>
 
-void SingleShotPattern::execute(EnemyShip* shooter, std::vector<Projectile*>& projectiles) {
+void SingleShotPattern::execute(EnemyShip* shooter, DynamicArray<Projectile*>& projectiles) {
     if (!shooter || !canShoot()) return;
     
     sf::Vector2f pos = shooter->getPosition();
-    projectiles.push_back(new EnemyBullet(pos.x, pos.y + shooter->getSize()/2, 0, 1));
+    projectiles.pushBack(new EnemyBullet(pos.x, pos.y + shooter->getSize()/2, 0, 1));
     
     resetCooldown();
 }
 
-void SpreadShotPattern::execute(EnemyShip* shooter, std::vector<Projectile*>& projectiles) {
+void SpreadShotPattern::execute(EnemyShip* shooter, DynamicArray<Projectile*>& projectiles) {
     if (!shooter || !canShoot()) return;
     
     sf::Vector2f pos = shooter->getPosition();
     
     // Center
-    projectiles.push_back(new EnemyBullet(pos.x, pos.y + shooter->getSize()/2, 0, 1));
+    projectiles.pushBack(new EnemyBullet(pos.x, pos.y + shooter->getSize()/2, 0, 1));
     
     // Left
     float leftAngle = -spreadAngle * 3.14159f / 180.0f;
-    projectiles.push_back(new EnemyBullet(
+    projectiles.pushBack(new EnemyBullet(
         pos.x, pos.y + shooter->getSize()/2, 
         std::sin(leftAngle), std::cos(leftAngle)
     ));
     
     // Right
     float rightAngle = spreadAngle * 3.14159f / 180.0f;
-    projectiles.push_back(new EnemyBullet(
+    projectiles.pushBack(new EnemyBullet(
         pos.x, pos.y + shooter->getSize()/2,
         std::sin(rightAngle), std::cos(rightAngle)
     ));
@@ -37,7 +37,7 @@ void SpreadShotPattern::execute(EnemyShip* shooter, std::vector<Projectile*>& pr
     resetCooldown();
 }
 
-void CircularBurstPattern::execute(EnemyShip* shooter, std::vector<Projectile*>& projectiles) {
+void CircularBurstPattern::execute(EnemyShip* shooter, DynamicArray<Projectile*>& projectiles) {
     if (!shooter || !canShoot()) return;
     
     sf::Vector2f pos = shooter->getPosition();
@@ -45,7 +45,7 @@ void CircularBurstPattern::execute(EnemyShip* shooter, std::vector<Projectile*>&
     
     for (int i = 0; i < bulletCount; i++) {
         float angle = (angleStep * i) * 3.14159f / 180.0f;
-        projectiles.push_back(new EnemyBullet(
+        projectiles.pushBack(new EnemyBullet(
             pos.x, pos.y,
             std::cos(angle), std::sin(angle)
         ));
@@ -54,7 +54,7 @@ void CircularBurstPattern::execute(EnemyShip* shooter, std::vector<Projectile*>&
     resetCooldown();
 }
 
-void AimedShotPattern::execute(EnemyShip* shooter, std::vector<Projectile*>& projectiles) {
+void AimedShotPattern::execute(EnemyShip* shooter, DynamicArray<Projectile*>& projectiles) {
     if (!shooter || !canShoot()) return;
     
     sf::Vector2f pos = shooter->getPosition();
@@ -66,21 +66,21 @@ void AimedShotPattern::execute(EnemyShip* shooter, std::vector<Projectile*>& pro
         direction.y /= length;
     }
     
-    projectiles.push_back(new EnemyBullet(
+    projectiles.pushBack(new EnemyBullet(
         pos.x, pos.y + shooter->getSize()/2,
-        direction.x, direction. y
+        direction.x, direction.y
     ));
     
     resetCooldown();
 }
 
-void SpiralPattern::execute(EnemyShip* shooter, std::vector<Projectile*>& projectiles) {
+void SpiralPattern::execute(EnemyShip* shooter, DynamicArray<Projectile*>& projectiles) {
     if (!shooter || !canShoot()) return;
     
     sf::Vector2f pos = shooter->getPosition();
     
     float rad = angle * 3.14159f / 180.0f;
-    projectiles.push_back(new EnemyBullet(
+    projectiles.pushBack(new EnemyBullet(
         pos.x, pos.y + shooter->getSize()/2,
         std::sin(rad) * 0.5f, std::cos(rad)
     ));
@@ -91,7 +91,7 @@ void SpiralPattern::execute(EnemyShip* shooter, std::vector<Projectile*>& projec
     resetCooldown();
 }
 
-void WavePattern::execute(EnemyShip* shooter, std::vector<Projectile*>& projectiles) {
+void WavePattern::execute(EnemyShip* shooter, DynamicArray<Projectile*>& projectiles) {
     if (!shooter || !canShoot()) return;
     
     sf::Vector2f pos = shooter->getPosition();
@@ -99,7 +99,7 @@ void WavePattern::execute(EnemyShip* shooter, std::vector<Projectile*>& projecti
     float startX = pos.x - (waveSize - 1) * spacing / 2;
     
     for (int i = 0; i < waveSize; i++) {
-        projectiles.push_back(new EnemyBullet(
+        projectiles.pushBack(new EnemyBullet(
             startX + i * spacing,
             pos.y + shooter->getSize()/2,
             0, 1
@@ -109,7 +109,7 @@ void WavePattern::execute(EnemyShip* shooter, std::vector<Projectile*>& projecti
     resetCooldown();
 }
 
-void ShotgunPattern::execute(EnemyShip* shooter, std:: vector<Projectile*>& projectiles) {
+void ShotgunPattern::execute(EnemyShip* shooter, DynamicArray<Projectile*>& projectiles) {
     if (!shooter || !canShoot()) return;
     
     sf::Vector2f pos = shooter->getPosition();
@@ -118,7 +118,7 @@ void ShotgunPattern::execute(EnemyShip* shooter, std:: vector<Projectile*>& proj
         float randomAngle = ((rand() % 60) - 30) * 3.14159f / 180.0f;
         float randomSpeed = 0.8f + (rand() % 40) * 0.01f;
         
-        projectiles.push_back(new EnemyBullet(
+        projectiles.pushBack(new EnemyBullet(
             pos.x + (rand() % 20) - 10,
             pos.y + shooter->getSize()/2,
             std::sin(randomAngle) * randomSpeed,
@@ -129,10 +129,10 @@ void ShotgunPattern::execute(EnemyShip* shooter, std:: vector<Projectile*>& proj
     resetCooldown();
 }
 
-void LaserBeamPattern:: execute(EnemyShip* shooter, std::vector<Projectile*>& projectiles) {
+void LaserBeamPattern::execute(EnemyShip* shooter, DynamicArray<Projectile*>& projectiles) {
     if (!shooter) return;
     
-    if (! firing && canShoot()) {
+    if (!firing && canShoot()) {
         firing = true;
         beamTimer = 0;
         resetCooldown();
@@ -140,11 +140,11 @@ void LaserBeamPattern:: execute(EnemyShip* shooter, std::vector<Projectile*>& pr
     
     if (firing) {
         sf::Vector2f pos = shooter->getPosition();
-        projectiles. push_back(new EnemyBullet(pos.x, pos.y + shooter->getSize()/2, 0, 1));
+        projectiles.pushBack(new EnemyBullet(pos.x, pos.y + shooter->getSize()/2, 0, 1));
     }
 }
 
-void LaserBeamPattern:: update(float deltaTime) {
+void LaserBeamPattern::update(float deltaTime) {
     AttackPattern::update(deltaTime);
     
     if (firing) {

@@ -17,7 +17,7 @@
 #include "DifficultyManager.h"
 #include "AchievementSystem.h"
 #include "MenuSystem.h"
-#include <vector>
+#include "DynamicArray.h"
 
 class GameEngine {
 private:  
@@ -34,10 +34,10 @@ private:
     
     // Entities
     PlayerShip* player;
-    std::vector<EnemyShip*> enemies;
-    std:: vector<Projectile*> projectiles;
-    std::vector<Asteroid*> asteroids;
-    std::vector<Collectible*> collectibles;
+    DynamicArray<EnemyShip*> enemies;
+    DynamicArray<Projectile*> projectiles;
+    DynamicArray<Asteroid*> asteroids;
+    DynamicArray<Collectible*> collectibles;
     
     // Managers
     WaveManager waveManager;
@@ -65,7 +65,7 @@ private:
         float speed;
         sf::Color color;
     };
-    std::vector<Star> stars;
+    DynamicArray<Star> stars;
     
     // Screen shake
     float screenShake;
@@ -124,7 +124,7 @@ private:
     
     // UI helpers
     void drawText(const std::string& text, float x, float y, 
-                  int size, sf:: Color color, bool centered = false);
+                  int size, sf::Color color, bool centered = false);
 };
 
 #endif

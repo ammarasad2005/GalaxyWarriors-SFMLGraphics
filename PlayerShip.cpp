@@ -228,18 +228,18 @@ void PlayerShip::handleInput(float deltaTime) {
     }
 }
 
-void PlayerShip::shoot(std::vector<Projectile*>& projectiles) {
+void PlayerShip::shoot(DynamicArray<Projectile*>& projectiles) {
     if (!canShoot() || !active) return;
     
     if (doubleFireActive) {
-        projectiles.push_back(new PlayerBullet(
+        projectiles.pushBack(new PlayerBullet(
             position.x - 10, position.y - size/2, 0, -1
         ));
-        projectiles. push_back(new PlayerBullet(
+        projectiles.pushBack(new PlayerBullet(
             position.x + 10, position.y - size/2, 0, -1
         ));
     } else {
-        projectiles.push_back(new PlayerBullet(
+        projectiles.pushBack(new PlayerBullet(
             position.x, position.y - size/2, 0, -1
         ));
     }
