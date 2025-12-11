@@ -2,7 +2,7 @@
 #define SHIP_H
 
 #include "Entity.h"
-#include <vector>
+#include "DynamicArray.h"
 
 class Projectile; // Forward declaration
 
@@ -26,7 +26,7 @@ public:
     virtual ~Ship() {}
     
     // PURE VIRTUAL: Each ship type shoots differently
-    virtual void shoot(std::vector<Projectile*>& projectiles) = 0;
+    virtual void shoot(DynamicArray<Projectile*>& projectiles) = 0;
     
     // CONST CORRECTNESS
     float getFireRate() const { return fireRate; }

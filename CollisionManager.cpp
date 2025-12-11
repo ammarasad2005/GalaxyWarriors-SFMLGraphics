@@ -21,32 +21,32 @@ bool CollisionManager::checkAABB(const sf::FloatRect& a, const sf:: FloatRect& b
 
 void CollisionManager::checkAllCollisions(
     PlayerShip* player,
-    std::vector<EnemyShip*>& enemies,
-    std::vector<Projectile*>& projectiles,
-    std::vector<Asteroid*>& asteroids,
-    std::vector<Collectible*>& collectibles,
+    DynamicArray<EnemyShip*>& enemies,
+    DynamicArray<Projectile*>& projectiles,
+    DynamicArray<Asteroid*>& asteroids,
+    DynamicArray<Collectible*>& collectibles,
     ParticleSystem& particles
 ) {
-    if (! player || !player->isActive()) return;
+    if (!player || !player->isActive()) return;
     
     // 1. Player bullets vs Enemies
-    for (auto* projectile : projectiles) {
-        if (! projectile->isActive() || projectile->getOwnerId() != 0) continue;
+    for (int i = 0; i < projectiles.getSize(); i++) {
+        if (!projectiles[i]->isActive() || projectiles[i]->getOwnerId() != 0) continue;
         
-        for (auto* enemy : enemies) {
-            if (!enemy->isActive()) continue;
+        for (int j = 0; j < enemies.getSize(); j++) {
+            if (!enemies[j]->isActive()) continue;
             
-            if (checkCollision(projectile, enemy)) {
-                enemy->takeDamage(projectile->getDamage());
-                projectile->destroy();
+            if (checkCollision(projectiles[i], enemies[j])) {
+                enemies[j]->takeDamage(projectiles[i]->getDamage());
+                projectiles[i]->destroy();
                 
-                particles.createHitSpark(projectile->getPosition());
+                particles.createHitSpark(projectiles[i]->getPosition());
                 
-                if (enemy->isDead()) {
-                    player->addScore(enemy->getScoreValue());
+                if (enemies[j]->isDead()) {
+                    player->addScore(enemies[j]->getScoreValue());
                     particles.createExplosion(
-                        enemy->getPosition(), 
-                        enemy->getColor(), 
+                        enemies[j]->getPosition(), 
+                        enemies[j]->getColor(), 
                         30
                     );
                 }
@@ -58,22 +58,22 @@ void CollisionManager::checkAllCollisions(
     }
     
     // 2. Player bullets vs Asteroids
-    for (auto* projectile : projectiles) {
-        if (!projectile->isActive() || projectile->getOwnerId() != 0) continue;
+    for (int i = 0; i < projectiles.getSize(); i++) {
+        if (!projectiles[i]->isActive() || projectiles[i]->getOwnerId() != 0) continue;
         
-        for (auto* asteroid : asteroids) {
-            if (!asteroid->isActive()) continue;
+        for (int j = 0; j < asteroids.getSize(); j++) {
+            if (!asteroids[j]->isActive()) continue;
             
-            if (checkCollision(projectile, asteroid)) {
-                asteroid->takeDamage(projectile->getDamage());
-                projectile->destroy();
+            if (checkCollision(projectiles[i], asteroids[j])) {
+                asteroids[j]->takeDamage(projectiles[i]->getDamage());
+                projectiles[i]->destroy();
                 
-                particles.createHitSpark(projectile->getPosition());
+                particles.createHitSpark(projectiles[i]->getPosition());
                 
-                if (asteroid->isDead()) {
-                    player->addScore(50 * (asteroid->getType() + 1));
-                    particles. createExplosion(
-                        asteroid->getPosition(),
+                if (asteroids[j]->isDead()) {
+                    player->addScore(50 * (asteroids[j]->getType() + 1));
+                    particles.createExplosion(
+                        asteroids[j]->getPosition(),
                         sf::Color(100, 100, 100),
                         20
                     );
@@ -86,15 +86,15 @@ void CollisionManager::checkAllCollisions(
     }
     
     // 3. Enemy bullets vs Player
-    for (auto* projectile : projectiles) {
-        if (!projectile->isActive() || projectile->getOwnerId() != 1) continue;
+    for (int i = 0; i < projectiles.getSize(); i++) {
+        if (!projectiles[i]->isActive() || projectiles[i]->getOwnerId() != 1) continue;
         
-        if (checkCollision(projectile, player)) {
-            player->takeDamage(projectile->getDamage());
-            projectile->destroy();
+        if (checkCollision(projectiles[i], player)) {
+            player->takeDamage(projectiles[i]->getDamage());
+            projectiles[i]->destroy();
             
-            particles. createExplosion(
-                projectile->getPosition(),
+            particles.createExplosion(
+                projectiles[i]->getPosition(),
                 sf::Color(255, 100, 0),
                 15
             );
@@ -104,22 +104,22 @@ void CollisionManager::checkAllCollisions(
     }
     
     // 4. Player vs Enemies
-    for (auto* enemy :  enemies) {
-        if (!enemy->isActive()) continue;
+    for (int i = 0; i < enemies.getSize(); i++) {
+        if (!enemies[i]->isActive()) continue;
         
-        if (checkCollision(player, enemy)) {
+        if (checkCollision(player, enemies[i])) {
             if (!player->isInvincible()) {
                 player->takeDamage(20.0f);
-                enemy->takeDamage(50.0f);
+                enemies[i]->takeDamage(50.0f);
                 
                 particles.createExplosion(
-                    enemy->getPosition(),
+                    enemies[i]->getPosition(),
                     sf::Color(255, 150, 0),
                     25
                 );
                 
-                if (enemy->isDead()) {
-                    player->addScore(enemy->getScoreValue() / 2);
+                if (enemies[i]->isDead()) {
+                    player->addScore(enemies[i]->getScoreValue() / 2);
                 }
                 
                 totalCollisions++;
@@ -128,16 +128,16 @@ void CollisionManager::checkAllCollisions(
     }
     
     // 5. Player vs Asteroids
-    for (auto* asteroid : asteroids) {
-        if (!asteroid->isActive()) continue;
+    for (int i = 0; i < asteroids.getSize(); i++) {
+        if (!asteroids[i]->isActive()) continue;
         
-        if (checkCollision(player, asteroid)) {
+        if (checkCollision(player, asteroids[i])) {
             if (!player->isInvincible()) {
                 player->takeDamage(15.0f);
-                asteroid->takeDamage(30.0f);
+                asteroids[i]->takeDamage(30.0f);
                 
-                particles. createExplosion(
-                    asteroid->getPosition(),
+                particles.createExplosion(
+                    asteroids[i]->getPosition(),
                     sf::Color(120, 120, 120),
                     20
                 );
@@ -148,24 +148,24 @@ void CollisionManager::checkAllCollisions(
     }
     
     // 6. Player vs Collectibles
-    for (auto* collectible : collectibles) {
-        if (!collectible->isActive() || collectible->isCollected()) continue;
+    for (int i = 0; i < collectibles.getSize(); i++) {
+        if (!collectibles[i]->isActive() || collectibles[i]->isCollected()) continue;
         
-        if (checkCollision(player, collectible)) {
-            collectible->apply(player);
+        if (checkCollision(player, collectibles[i])) {
+            collectibles[i]->apply(player);
             
-            PowerUp* powerUp = dynamic_cast<PowerUp*>(collectible);
-            Resource* resource = dynamic_cast<Resource*>(collectible);
+            PowerUp* powerUp = dynamic_cast<PowerUp*>(collectibles[i]);
+            Resource* resource = dynamic_cast<Resource*>(collectibles[i]);
             
             if (powerUp) {
                 sf::Color effectColor;
                 switch(powerUp->getType()) {
-                    case PowerUp:: SHIELD:  effectColor = sf::Color(0, 150, 255); break;
+                    case PowerUp::SHIELD:  effectColor = sf::Color(0, 150, 255); break;
                     case PowerUp::DOUBLE_FIRE: effectColor = sf::Color(255, 50, 50); break;
                     case PowerUp::REPAIR:  effectColor = sf::Color(50, 255, 50); break;
                     case PowerUp::SPEED_BOOST: effectColor = sf::Color(255, 255, 50); break;
                 }
-                particles.createPowerUpCollect(collectible->getPosition(), effectColor);
+                particles.createPowerUpCollect(collectibles[i]->getPosition(), effectColor);
             } else if (resource) {
                 particles.createPowerUpCollect(
                     collectible->getPosition(),

@@ -45,7 +45,7 @@ void Asteroid::generateVertices() {
                     float distance = size * (0.7f + (rand() % 35) * 0.01f);
                     
                     float rad = angle * 3.14159f / 180.0f;
-                    vertices.push_back(sf::Vector2f(
+                    vertices.pushBack(sf::Vector2f(
                         std::cos(rad) * distance,
                         std::sin(rad) * distance
                     ));
@@ -64,7 +64,7 @@ void Asteroid::generateVertices() {
                     float distance = size * radiusVariation * (0.8f + (rand() % 25) * 0.01f);
                     
                     float rad = angle * 3.14159f / 180.0f;
-                    vertices.push_back(sf::Vector2f(
+                    vertices.pushBack(sf::Vector2f(
                         std::cos(rad) * distance,
                         std::sin(rad) * distance
                     ));
@@ -83,7 +83,7 @@ void Asteroid::generateVertices() {
                     float distance = size * (0.7f + wave + (rand() % 30) * 0.01f);
                     
                     float rad = angle * 3.14159f / 180.0f;
-                    vertices.push_back(sf::Vector2f(
+                    vertices.pushBack(sf::Vector2f(
                         std::cos(rad) * distance,
                         std::sin(rad) * distance
                     ));

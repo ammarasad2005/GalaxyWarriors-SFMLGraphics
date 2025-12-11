@@ -140,11 +140,11 @@ void AchievementSystem:: onEnemyKilled() {
     checkAchievement("ace_pilot");
     
     int combo = comboSystem.getCurrentCombo();
-    for (auto& achievement : achievements) {
-        if (achievement.id == "combo_master" || achievement.id == "unstoppable") {
-            if (combo >= achievement.targetValue) {
-                achievement.currentValue = combo;
-                achievement.checkUnlock();
+    for (int i = 0; i < achievements.getSize(); i++) {
+        if (achievements[i].id == "combo_master" || achievements[i].id == "unstoppable") {
+            if (combo >= achievements[i].targetValue) {
+                achievements[i].currentValue = combo;
+                achievements[i].checkUnlock();
             }
         }
     }
@@ -179,19 +179,19 @@ void AchievementSystem::onBossDefeated() {
 }
 
 void AchievementSystem::onLevelCompleted(int level) {
-    for (auto& achievement : achievements) {
-        if (achievement.id == "survivor") {
-            achievement.currentValue = level;
-            achievement.checkUnlock();
+    for (int i = 0; i < achievements.getSize(); i++) {
+        if (achievements[i].id == "survivor") {
+            achievements[i].currentValue = level;
+            achievements[i].checkUnlock();
         }
     }
 }
 
 void AchievementSystem::checkAchievement(const std::string& id) {
-    for (auto& achievement : achievements) {
-        if (achievement.id == id && ! achievement.unlocked) {
+    for (int i = 0; i < achievements.getSize(); i++) {
+        if (achievements[i].id == id && !achievements[i].unlocked) {
             if (id == "first_blood" || id == "exterminator" || id == "ace_pilot") {
-                achievement.currentValue = totalKills;
+                achievements[i].currentValue = totalKills;
             } else if (id == "high_scorer" || id == "legend") {
                 achievement.currentValue = totalScore;
             } else if (id == "sharpshooter") {
@@ -212,9 +212,9 @@ void AchievementSystem::checkAchievement(const std::string& id) {
 }
 
 void AchievementSystem::unlockAchievement(const std::string& id) {
-    for (const auto& achievement : achievements) {
-        if (achievement.id == id) {
-            recentUnlocks.push_back(id);
+    for (int i = 0; i < achievements.getSize(); i++) {
+        if (achievements[i].id == id) {
+            recentUnlocks.pushBack(id);
             notificationTimer = 0;
             break;
         }
@@ -223,8 +223,8 @@ void AchievementSystem::unlockAchievement(const std::string& id) {
 
 int AchievementSystem::getUnlockedCount() const {
     int count = 0;
-    for (const auto& achievement : achievements) {
-        if (achievement.unlocked) count++;
+    for (int i = 0; i < achievements.getSize(); i++) {
+        if (achievements[i].unlocked) count++;
     }
     return count;
 }
@@ -232,22 +232,22 @@ int AchievementSystem::getUnlockedCount() const {
 void AchievementSystem::update(float deltaTime) {
     comboSystem.update(deltaTime);
     
-    if (!  recentUnlocks.empty()) {
+    if (!recentUnlocks.isEmpty()) {
         notificationTimer += deltaTime;
         if (notificationTimer >= 4.0f) {
-            recentUnlocks.erase(recentUnlocks.begin());
+            recentUnlocks.removeAt(0);
             notificationTimer = 0;
         }
     }
 }
 
-void AchievementSystem:: renderNotifications(sf::RenderWindow& window) {
-    if (recentUnlocks.empty()) return;
+void AchievementSystem::renderNotifications(sf::RenderWindow& window) {
+    if (recentUnlocks.isEmpty()) return;
     
     const Achievement* unlocked = nullptr;
-    for (const auto& achievement : achievements) {
-        if (achievement.id == recentUnlocks[0]) {
-            unlocked = &achievement;
+    for (int i = 0; i < achievements.getSize(); i++) {
+        if (achievements[i].id == recentUnlocks[0]) {
+            unlocked = &achievements[i];
             break;
         }
     }
@@ -299,10 +299,10 @@ void AchievementSystem:: save(const std::string& filename) {
     std::ofstream file(filename);
     if (!file.is_open()) return;
     
-    for (const auto& achievement : achievements) {
-        file << achievement.id << ","
-             << achievement.currentValue << ","
-             << achievement.unlocked << "\n";
+    for (int i = 0; i < achievements.getSize(); i++) {
+        file << achievements[i].id << ","
+             << achievements[i].currentValue << ","
+             << achievements[i].unlocked << "\n";
     }
     
     file.close();
@@ -312,7 +312,7 @@ void AchievementSystem::load(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) return;
     
-    std::  string line;
+    std::string line;
     while (std::getline(file, line)) {
         std::stringstream ss(line);
         std::string id, currentStr, unlockedStr;
@@ -321,10 +321,10 @@ void AchievementSystem::load(const std::string& filename) {
         std::getline(ss, currentStr, ',');
         std::getline(ss, unlockedStr, ',');
         
-        for (auto& achievement : achievements) {
-            if (achievement.id == id) {
-                achievement.currentValue = std::stoi(currentStr);
-                achievement.unlocked = (unlockedStr == "1");
+        for (int i = 0; i < achievements.getSize(); i++) {
+            if (achievements[i].id == id) {
+                achievements[i].currentValue = std::stoi(currentStr);
+                achievements[i].unlocked = (unlockedStr == "1");
                 break;
             }
         }
