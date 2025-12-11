@@ -2,7 +2,7 @@
 #define ATTACKPATTERN_H
 
 #include <SFML/Graphics.hpp>
-#include <vector>
+#include "DynamicArray.h"
 #include "Projectile.h"
 
 class EnemyShip;
@@ -17,7 +17,7 @@ public:
     AttackPattern(float cd = 2.0f) : cooldown(cd), cooldownTimer(0) {}
     virtual ~AttackPattern() {}
     
-    virtual void execute(EnemyShip* shooter, std::vector<Projectile*>& projectiles) = 0;
+    virtual void execute(EnemyShip* shooter, DynamicArray<Projectile*>& projectiles) = 0;
     
     void update(float deltaTime) {
         cooldownTimer += deltaTime;
@@ -36,7 +36,7 @@ public:
 class SingleShotPattern : public AttackPattern {
 public:
     SingleShotPattern() : AttackPattern(2.0f) {}
-    void execute(EnemyShip* shooter, std::vector<Projectile*>& projectiles) override;
+    void execute(EnemyShip* shooter, DynamicArray<Projectile*>& projectiles) override;
 };
 
 // Three-way spread
@@ -46,7 +46,7 @@ private:
     
 public:
     SpreadShotPattern(float angle = 30.0f) : AttackPattern(2.5f), spreadAngle(angle) {}
-    void execute(EnemyShip* shooter, std:: vector<Projectile*>& projectiles) override;
+    void execute(EnemyShip* shooter, DynamicArray<Projectile*>& projectiles) override;
 };
 
 // Circular burst
@@ -56,7 +56,7 @@ private:
     
 public:
     CircularBurstPattern(int count = 8) : AttackPattern(3.0f), bulletCount(count) {}
-    void execute(EnemyShip* shooter, std::vector<Projectile*>& projectiles) override;
+    void execute(EnemyShip* shooter, DynamicArray<Projectile*>& projectiles) override;
 };
 
 // Aimed shot
@@ -67,7 +67,7 @@ private:
 public:
     AimedShotPattern() : AttackPattern(1.5f) {}
     void setPlayerPosition(const sf::Vector2f& pos) { playerPos = pos; }
-    void execute(EnemyShip* shooter, std::vector<Projectile*>& projectiles) override;
+    void execute(EnemyShip* shooter, DynamicArray<Projectile*>& projectiles) override;
 };
 
 // Spiral pattern
@@ -78,7 +78,7 @@ private:
     
 public:  
     SpiralPattern() : AttackPattern(0.3f), angle(0), angleIncrement(30.0f) {}
-    void execute(EnemyShip* shooter, std::vector<Projectile*>& projectiles) override;
+    void execute(EnemyShip* shooter, DynamicArray<Projectile*>& projectiles) override;
 };
 
 // Wave pattern
@@ -88,7 +88,7 @@ private:
     
 public:
     WavePattern(int size = 5) : AttackPattern(2.0f), waveSize(size) {}
-    void execute(EnemyShip* shooter, std::vector<Projectile*>& projectiles) override;
+    void execute(EnemyShip* shooter, DynamicArray<Projectile*>& projectiles) override;
 };
 
 // Shotgun blast
@@ -98,7 +98,7 @@ private:
     
 public:  
     ShotgunPattern(int count = 12) : AttackPattern(1.8f), pelletCount(count) {}
-    void execute(EnemyShip* shooter, std:: vector<Projectile*>& projectiles) override;
+    void execute(EnemyShip* shooter, DynamicArray<Projectile*>& projectiles) override;
 };
 
 // Laser beam
@@ -110,7 +110,7 @@ private:
     
 public:
     LaserBeamPattern() : AttackPattern(4.0f), firing(false), beamDuration(1.5f), beamTimer(0) {}
-    void execute(EnemyShip* shooter, std:: vector<Projectile*>& projectiles) override;
+    void execute(EnemyShip* shooter, DynamicArray<Projectile*>& projectiles) override;
     void update(float deltaTime);
 };
 
