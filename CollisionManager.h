@@ -8,7 +8,7 @@
 #include "Asteroid.h"
 #include "Collectible.h"
 #include "ParticleSystem.h"
-#include <vector>
+#include "DynamicArray.h"
 
 // STATIC CLASS:  Collision detection
 class CollisionManager {
@@ -25,10 +25,10 @@ public:
     
     static void checkAllCollisions(
         PlayerShip* player,
-        std::vector<EnemyShip*>& enemies,
-        std::vector<Projectile*>& projectiles,
-        std::vector<Asteroid*>& asteroids,
-        std::vector<Collectible*>& collectibles,
+        DynamicArray<EnemyShip*>& enemies,
+        DynamicArray<Projectile*>& projectiles,
+        DynamicArray<Asteroid*>& asteroids,
+        DynamicArray<Collectible*>& collectibles,
         ParticleSystem& particles
     );
     
