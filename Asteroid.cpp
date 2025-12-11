@@ -45,7 +45,7 @@ void Asteroid::generateVertices() {
                     float distance = size * (0.7f + (rand() % 35) * 0.01f);
                     
                     float rad = angle * 3.14159f / 180.0f;
-                    vertices.push_back(sf::Vector2f(
+                    vertices.pushBack(sf::Vector2f(
                         std::cos(rad) * distance,
                         std::sin(rad) * distance
                     ));
@@ -64,7 +64,7 @@ void Asteroid::generateVertices() {
                     float distance = size * radiusVariation * (0.8f + (rand() % 25) * 0.01f);
                     
                     float rad = angle * 3.14159f / 180.0f;
-                    vertices.push_back(sf::Vector2f(
+                    vertices.pushBack(sf::Vector2f(
                         std::cos(rad) * distance,
                         std::sin(rad) * distance
                     ));
@@ -83,7 +83,7 @@ void Asteroid::generateVertices() {
                     float distance = size * (0.7f + wave + (rand() % 30) * 0.01f);
                     
                     float rad = angle * 3.14159f / 180.0f;
-                    vertices.push_back(sf::Vector2f(
+                    vertices.pushBack(sf::Vector2f(
                         std::cos(rad) * distance,
                         std::sin(rad) * distance
                     ));
@@ -94,13 +94,13 @@ void Asteroid::generateVertices() {
 }
 
 void Asteroid::render(sf::RenderWindow& window) {
-    if (!active || vertices.empty()) return;
+    if (!active || vertices.isEmpty()) return;
     
     pulseTimer += 0.016f;
     
     // Create convex shape
-    sf::ConvexShape asteroidShape(vertices.size());
-    for (size_t i = 0; i < vertices.size(); i++) {
+    sf::ConvexShape asteroidShape(vertices.getSize());
+    for (size_t i = 0; i < vertices.getSize(); i++) {
         asteroidShape.setPoint(i, vertices[i]);
     }
     
