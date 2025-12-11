@@ -2,11 +2,11 @@
 #define ASTEROID_H
 
 #include "Obstacle.h"
-#include <vector>
+#include "DynamicArray.h"
 
 class Asteroid : public Obstacle {
 private:
-    std::vector<sf::Vector2f> vertices;
+    DynamicArray<sf::Vector2f> vertices;
     int asteroidType;
     sf::Color edgeColor;
     float pulseTimer;
