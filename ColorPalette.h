@@ -2,7 +2,7 @@
 #define COLORPALETTE_H
 
 #include <SFML/Graphics.hpp>
-#include <map>
+#include "HashMap.h"
 #include <string>
 
 // SINGLETON PATTERN: Global color management
@@ -11,7 +11,7 @@ private:
     // STATIC MEMBER:  Single instance
     static ColorPalette* instance;
     
-    std::map<std::string, sf::Color> colors;
+    HashMap<std::string, sf::Color> colors;
     int currentTheme;
     
     // Private constructor for singleton
