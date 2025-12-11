@@ -62,10 +62,10 @@ void BasicEnemy::render(sf::RenderWindow& window) {
     window.draw(core);
 }
 
-void BasicEnemy::shoot(std::vector<Projectile*>& projectiles) {
+void BasicEnemy::shoot(DynamicArray<Projectile*>& projectiles) {
     if (!canShoot() || !active) return;
     
-    projectiles.push_back(new EnemyBullet(
+    projectiles.pushBack(new EnemyBullet(
         position.x, position.y + size/2, 0, 1
     ));
     

@@ -20,10 +20,10 @@ void MenuSystem::setupMainMenu() {
     float buttonHeight = 50;
     float spacing = 70;
     
-    mainMenuButtons.push_back(MenuButton(centerX, startY, buttonWidth, buttonHeight, "[1] START GAME", 1));
-    mainMenuButtons.push_back(MenuButton(centerX, startY + spacing, buttonWidth, buttonHeight, "[2] THEME SELECTION", 2));
-    mainMenuButtons.push_back(MenuButton(centerX, startY + spacing * 2, buttonWidth, buttonHeight, "[3] HIGH SCORES", 3));
-    mainMenuButtons.push_back(MenuButton(centerX, startY + spacing * 3, buttonWidth, buttonHeight, "[4] EXIT", 4));
+    mainMenuButtons.pushBack(MenuButton(centerX, startY, buttonWidth, buttonHeight, "[1] START GAME", 1));
+    mainMenuButtons.pushBack(MenuButton(centerX, startY + spacing, buttonWidth, buttonHeight, "[2] THEME SELECTION", 2));
+    mainMenuButtons.pushBack(MenuButton(centerX, startY + spacing * 2, buttonWidth, buttonHeight, "[3] HIGH SCORES", 3));
+    mainMenuButtons.pushBack(MenuButton(centerX, startY + spacing * 3, buttonWidth, buttonHeight, "[4] EXIT", 4));
 }
 
 void MenuSystem::setupThemeSelection() {
@@ -37,7 +37,7 @@ void MenuSystem::setupThemeSelection() {
     
     for (int i = 0; i < 5; i++) {
         float x = startX + (cardWidth + spacing) * i;
-        themeCards.push_back(ThemeCard(
+        themeCards.pushBack(ThemeCard(
             static_cast<ColorPalette::   Theme>(i),
             x, startY, cardWidth, cardHeight
         ));
@@ -57,19 +57,19 @@ void MenuSystem::update(float deltaTime) {
 }
 
 void MenuSystem::updateMenuParticles(float deltaTime) {
-    for (auto& particle : menuParticles) {
-        particle.position += particle.velocity * deltaTime;
-        particle.life -= deltaTime;
+    for (int i = 0; i < menuParticles.getSize();) {
+        menuParticles[i].position += menuParticles[i].velocity * deltaTime;
+        menuParticles[i].life -= deltaTime;
         
-        particle.color. a = static_cast<sf::Uint8>(particle.life * 255);
-        particle.velocity *= 0.98f;
+        menuParticles[i].color.a = static_cast<sf::Uint8>(menuParticles[i].life * 255);
+        menuParticles[i].velocity *= 0.98f;
+        
+        if (menuParticles[i].life <= 0) {
+            menuParticles.removeAt(i);
+        } else {
+            i++;
+        }
     }
-    
-    menuParticles.erase(
-        std::remove_if(menuParticles.begin(), menuParticles.end(),
-            [](const MenuParticle& p) { return p.life <= 0; }),
-        menuParticles.end()
-    );
 }
 
 void MenuSystem::spawnMenuParticle() {
@@ -83,17 +83,17 @@ void MenuSystem::spawnMenuParticle() {
     particle.life = 2.0f + (rand() % 20) * 0.1f;
     particle.size = 2.0f + (rand() % 3);
     
-    menuParticles.push_back(particle);
+    menuParticles.pushBack(particle);
 }
 
 void MenuSystem::render(sf::RenderWindow& window, bool fontLoaded, sf::Font& font) {
     ColorPalette* palette = ColorPalette::getInstance();
     
     // Render particles
-    for (const auto& particle : menuParticles) {
-        sf::CircleShape circle(particle.size);
-        circle.setPosition(particle.position);
-        circle.setFillColor(particle.  color);
+    for (int i = 0; i < menuParticles.getSize(); i++) {
+        sf::CircleShape circle(menuParticles[i].size);
+        circle.setPosition(menuParticles[i].position);
+        circle.setFillColor(menuParticles[i].color);
         window.draw(circle);
     }
     
@@ -122,7 +122,8 @@ void MenuSystem::render(sf::RenderWindow& window, bool fontLoaded, sf::Font& fon
              20, subtitleColor, true, fontLoaded, font);
     
     // Menu buttons
-    for (auto& button : mainMenuButtons) {
+    for (int i = 0; i < mainMenuButtons.getSize(); i++) {
+        MenuButton& button = mainMenuButtons[i];
         sf::RectangleShape bg(sf::Vector2f(button.bounds.width, button.bounds.height));
         bg.setPosition(button.bounds.left, button.bounds.top);
         
@@ -138,25 +139,25 @@ void MenuSystem::render(sf::RenderWindow& window, bool fontLoaded, sf::Font& fon
             bg.setOutlineColor(palette->getUIAccent());
             bg.setOutlineThickness(3);
             
-            for (int i = 0; i < 4; i++) {
-                sf::  CircleShape particle(3);
-                float progress = std::fmod(animationTimer * 2.0f + i * 0.25f, 1.0f);
+            for (int j = 0; j < 4; j++) {
+                sf::CircleShape particle(3);
+                float progress = std::fmod(animationTimer * 2.0f + j * 0.25f, 1.0f);
                 float x = button.bounds.left + button.bounds.width * progress;
-                float y = button.bounds.top + (i % 2) * button.bounds.height;
+                float y = button.bounds.top + (j % 2) * button.bounds.height;
                 particle.setPosition(x, y);
                 particle.setFillColor(palette->getUIAccent());
                 window.draw(particle);
             }
         } else {
-            bg.setFillColor(button.   normalColor);
+            bg.setFillColor(button.normalColor);
             bg.setOutlineColor(sf::Color(100, 100, 150));
             bg.setOutlineThickness(2);
         }
         
         window.draw(bg);
         
-        sf::Color textColor = button.highlighted ? sf::Color::   White : sf::Color(200, 200, 200);
-        drawText(window, button.   text, 
+        sf::Color textColor = button.highlighted ? sf::Color::White : sf::Color(200, 200, 200);
+        drawText(window, button.text, 
                 button.bounds.left + button.bounds.width / 2,
                 button.bounds.top + button.bounds.height / 2 - 10,
                 22, textColor, true, fontLoaded, font);
@@ -299,12 +300,12 @@ void MenuSystem::renderThemeSelection(sf::RenderWindow& window, bool fontLoaded,
 
 int MenuSystem::handleClick(float x, float y) {
     if (inThemeSelection) {
-        for (size_t i = 0; i < themeCards.size(); i++) {
+        for (int i = 0; i < themeCards.getSize(); i++) {
             if (themeCards[i].contains(x, y)) {
-                for (auto& card : themeCards) {
-                    card.selected = false;
+                for (int j = 0; j < themeCards.getSize(); j++) {
+                    themeCards[j].selected = false;
                 }
-                themeCards[i]. selected = true;
+                themeCards[i].selected = true;
                 selectedThemeIndex = i;
                 
                 ColorPalette::getInstance()->setTheme(themeCards[i].theme);
@@ -318,9 +319,9 @@ int MenuSystem::handleClick(float x, float y) {
         
         return 0;
     } else {
-        for (const auto& button : mainMenuButtons) {
-            if (button.contains(x, y)) {
-                return button.actionId;
+        for (int i = 0; i < mainMenuButtons.getSize(); i++) {
+            if (mainMenuButtons[i].contains(x, y)) {
+                return mainMenuButtons[i].actionId;
             }
         }
     }
@@ -328,14 +329,14 @@ int MenuSystem::handleClick(float x, float y) {
     return 0;
 }
 
-void MenuSystem::   handleHover(float x, float y) {
+void MenuSystem::handleHover(float x, float y) {
     if (inThemeSelection) {
-        for (auto& card : themeCards) {
-            card.hovered = card.contains(x, y);
+        for (int i = 0; i < themeCards.getSize(); i++) {
+            themeCards[i].hovered = themeCards[i].contains(x, y);
         }
     } else {
-        for (auto& button : mainMenuButtons) {
-            button.highlighted = button.contains(x, y);
+        for (int i = 0; i < mainMenuButtons.getSize(); i++) {
+            mainMenuButtons[i].highlighted = mainMenuButtons[i].contains(x, y);
         }
     }
 }

@@ -235,17 +235,20 @@ void ParticleSystem::createWarpEffect(sf::Vector2f position, sf::Color color) {
 }
 
 void ParticleSystem::update(float deltaTime) {
- for (Particle& p : particlePool.getAll()) {
-        if (p.active) {
-        p.update(deltaTime);
+    DynamicArray<Particle>& particles = particlePool.getAll();
+    for (int i = 0; i < particles.getSize(); i++) {
+        if (particles[i].active) {
+            particles[i].update(deltaTime);
         }
     }
 }
 
 void ParticleSystem::render(sf::RenderWindow& window) {
-    for (Particle& p : particlePool.getAll()) {
-      if (p.active) {
-    p.render(window);
+    DynamicArray<Particle>& particles = particlePool.getAll();
+    for (int i = 0; i < particles.getSize(); i++) {
+        if (particles[i].active) {
+            particles[i].render(window);
         }
- }
+    }
+}
 }

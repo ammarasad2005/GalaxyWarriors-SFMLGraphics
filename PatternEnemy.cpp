@@ -128,10 +128,10 @@ void PatternEnemy::render(sf::RenderWindow& window) {
     }
 }
 
-void PatternEnemy::shoot(std::vector<Projectile*>& projectiles) {
+void PatternEnemy::shoot(DynamicArray<Projectile*>& projectiles) {
     if (!canShoot() || !active) return;
     
-    projectiles.push_back(new EnemyBullet(
+    projectiles.pushBack(new EnemyBullet(
         position.x, position.y + size/2, 0, 1
     ));
     

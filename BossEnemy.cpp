@@ -34,7 +34,7 @@ void BossEnemy::initializePhases() {
     phase1.speedMultiplier = 1.0f;
     phase1.fireRateMultiplier = 1.0f;
     phase1.attackPatternIndex = 0;
-    phases.push_back(phase1);
+    phases.pushBack(phase1);
     
     // Phase 2
     PhaseData phase2;
@@ -44,17 +44,17 @@ void BossEnemy::initializePhases() {
     phase2.speedMultiplier = 1.3f;
     phase2.fireRateMultiplier = 1.5f;
     phase2.attackPatternIndex = 1;
-    phases.push_back(phase2);
+    phases.pushBack(phase2);
     
     // Phase 3
     PhaseData phase3;
     phase3.healthThreshold = 0.25f;
     phase3.name = "FURY";
-    phase3.color = sf::Color::  Red;
+    phase3.color = sf::Color::Red;
     phase3.speedMultiplier = 1.6f;
     phase3.fireRateMultiplier = 2.0f;
     phase3.attackPatternIndex = 2;
-    phases.push_back(phase3);
+    phases.pushBack(phase3);
     
     // Phase 4
     PhaseData phase4;
@@ -64,13 +64,13 @@ void BossEnemy::initializePhases() {
     phase4.speedMultiplier = 2.0f;
     phase4.fireRateMultiplier = 3.0f;
     phase4.attackPatternIndex = 3;
-    phases.push_back(phase4);
+    phases.pushBack(phase4);
     
     // Initialize attack patterns
-    phaseAttackPatterns.push_back(std::make_unique<SpreadShotPattern>(25.0f));
-    phaseAttackPatterns.push_back(std::make_unique<CircularBurstPattern>(10));
-    phaseAttackPatterns.push_back(std::make_unique<SpiralPattern>());
-    phaseAttackPatterns.push_back(std::make_unique<ShotgunPattern>(20));
+    phaseAttackPatterns.pushBack(std::make_unique<SpreadShotPattern>(25.0f));
+    phaseAttackPatterns.pushBack(std::make_unique<CircularBurstPattern>(10));
+    phaseAttackPatterns.pushBack(std::make_unique<SpiralPattern>());
+    phaseAttackPatterns.pushBack(std::make_unique<ShotgunPattern>(20));
     
     currentColor = phase1.color;
     targetColor = phase1.color;
@@ -226,14 +226,14 @@ void BossEnemy::activatePhase(int phaseNum) {
     shootInterval = 1.0f / phaseData.fireRateMultiplier;
     color = phaseData.color;
     
-    if (phaseData.attackPatternIndex < phaseAttackPatterns.size()) {
+    if (phaseData.attackPatternIndex < phaseAttackPatterns.getSize()) {
         // Note: Can't move from vector, so we'll just use reference
-        currentAttackPattern. reset();
+        currentAttackPattern.reset();
     }
 }
 
-void BossEnemy::shoot(std::vector<Projectile*>& projectiles) {
-    if (! canShoot() || ! active || isTransitioning) return;
+void BossEnemy::shoot(DynamicArray<Projectile*>& projectiles) {
+    if (!canShoot() || !active || isTransitioning) return;
     
     sf::Vector2f pos = position;
     
@@ -241,15 +241,15 @@ void BossEnemy::shoot(std::vector<Projectile*>& projectiles) {
     switch(phase) {
         case 1:
             // Three bullets
-            projectiles.push_back(new EnemyBullet(pos.x - 20, pos.y + size, 0, 1));
-            projectiles.push_back(new EnemyBullet(pos.x, pos.y + size, 0, 1));
-            projectiles.push_back(new EnemyBullet(pos.x + 20, pos.y + size, 0, 1));
+            projectiles.pushBack(new EnemyBullet(pos.x - 20, pos.y + size, 0, 1));
+            projectiles.pushBack(new EnemyBullet(pos.x, pos.y + size, 0, 1));
+            projectiles.pushBack(new EnemyBullet(pos.x + 20, pos.y + size, 0, 1));
             break;
             
         case 2:
             // Five spread
             for (int i = -2; i <= 2; i++) {
-                projectiles.push_back(new EnemyBullet(
+                projectiles.pushBack(new EnemyBullet(
                     pos.x, pos.y + size, 
                     i * 0.3f, 1
                 ));
@@ -260,7 +260,7 @@ void BossEnemy::shoot(std::vector<Projectile*>& projectiles) {
             // Circular burst
             for (int i = 0; i < 8; i++) {
                 float angle = (45.0f * i) * 3.14159f / 180.0f;
-                projectiles.push_back(new EnemyBullet(
+                projectiles.pushBack(new EnemyBullet(
                     pos.x, pos.y,
                     std::cos(angle) * 0.5f, std::sin(angle) * 0.5f
                 ));
@@ -269,9 +269,9 @@ void BossEnemy::shoot(std::vector<Projectile*>& projectiles) {
             
         case 4:
             // Rapid fire
-            projectiles.push_back(new EnemyBullet(pos.x, pos. y + size, 0, 1));
-            projectiles.push_back(new EnemyBullet(pos.x - 30, pos.y + size, 0, 1));
-            projectiles.push_back(new EnemyBullet(pos.  x + 30, pos.y + size, 0, 1));
+            projectiles.pushBack(new EnemyBullet(pos.x, pos.y + size, 0, 1));
+            projectiles.pushBack(new EnemyBullet(pos.x - 30, pos.y + size, 0, 1));
+            projectiles.pushBack(new EnemyBullet(pos.x + 30, pos.y + size, 0, 1));
             break;
     }
     

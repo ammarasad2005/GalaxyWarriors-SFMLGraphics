@@ -44,13 +44,13 @@ WaveManager::WaveConfig WaveManager::getWaveConfig() const {
 }
 
 void WaveManager::update(float deltaTime, 
-                         std::vector<EnemyShip*>& enemies,
-                         std::vector<Asteroid*>& asteroids) {
+                         DynamicArray<EnemyShip*>& enemies,
+                         DynamicArray<Asteroid*>& asteroids) {
     if (!waveActive) return;
     
     enemiesAlive = 0;
-    for (auto* enemy : enemies) {
-        if (enemy && enemy->isActive()) {
+    for (int i = 0; i < enemies.getSize(); i++) {
+        if (enemies[i] && enemies[i]->isActive()) {
             enemiesAlive++;
         }
     }
@@ -103,30 +103,30 @@ bool WaveManager::isWaveComplete() const {
     return enemiesSpawned >= totalEnemies && enemiesAlive == 0;
 }
 
-void WaveManager::spawnEnemy(std::vector<EnemyShip*>& enemies) {
+void WaveManager::spawnEnemy(DynamicArray<EnemyShip*>& enemies) {
     WaveConfig config = getWaveConfig();
     
     float x = 100 + (rand() % 600);
     float y = -50;
     
-    if (config.hasBoss && ! bossSpawned && enemiesSpawned == 0) {
-        enemies.push_back(new BossEnemy(400, 50));
+    if (config.hasBoss && !bossSpawned && enemiesSpawned == 0) {
+        enemies.pushBack(new BossEnemy(400, 50));
         bossSpawned = true;
         return;
     }
     
-    int remainingBasic = config.basicEnemyCount - 
-        std::min(enemiesSpawned, config.basicEnemyCount);
+    int minVal = enemiesSpawned < config.basicEnemyCount ? enemiesSpawned : config.basicEnemyCount;
+    int remainingBasic = config.basicEnemyCount - minVal;
     int remainingPattern = config.patternEnemyCount;
     
     if (remainingPattern > 0 && (remainingBasic == 0 || rand() % 2 == 0)) {
-        enemies.push_back(new PatternEnemy(x, y));
+        enemies.pushBack(new PatternEnemy(x, y));
     } else {
-        enemies.push_back(new BasicEnemy(x, y));
+        enemies.pushBack(new BasicEnemy(x, y));
     }
 }
 
-void WaveManager::spawnAsteroid(std::vector<Asteroid*>& asteroids) {
+void WaveManager::spawnAsteroid(DynamicArray<Asteroid*>& asteroids) {
     float x = 50 + (rand() % 700);
     float y = -50;
     
@@ -138,5 +138,5 @@ void WaveManager::spawnAsteroid(std::vector<Asteroid*>& asteroids) {
         type = rand() % 3;
     }
     
-    asteroids.push_back(new Asteroid(x, y, type));
+    asteroids.pushBack(new Asteroid(x, y, type));
 }
