@@ -1,5 +1,4 @@
 #include "DifficultyManager.h"
-#include <algorithm>
 
 DifficultyManager* DifficultyManager::instance = nullptr;
 
@@ -20,7 +19,7 @@ DifficultyManager* DifficultyManager::getInstance() {
 float DifficultyManager::getEnemyHealthMultiplier() const {
     float killBonus = 1.0f + (consecutiveKills * 0.05f);
     float deathPenalty = 1.0f - (playerDeaths * 0.1f);
-    deathPenalty = std::max(0.5f, deathPenalty);
+    deathPenalty = deathPenalty < 0.5f ? 0.5f : deathPenalty;
     
     return difficultyMultiplier * killBonus * deathPenalty * adaptiveScale;
 }
@@ -33,7 +32,7 @@ float DifficultyManager::getSpawnRateMultiplier() const {
     float rate = 1.0f + (consecutiveKills * 0.05f);
     if (playerDeaths > 0) {
         rate *= (1.0f - playerDeaths * 0.15f);
-        rate = std::max(0.6f, rate);
+        rate = rate < 0.6f ? 0.6f : rate;
     }
     return rate;
 }
@@ -47,15 +46,15 @@ void DifficultyManager::onPlayerDeath() {
     consecutiveKills = 0;
     
     adaptiveScale *= 0.9f;
-    adaptiveScale = std::max(0.5f, adaptiveScale);
+    adaptiveScale = adaptiveScale < 0.5f ? 0.5f : adaptiveScale;
 }
 
-void DifficultyManager:: onEnemyKilled() {
+void DifficultyManager::onEnemyKilled() {
     consecutiveKills++;
     
     if (consecutiveKills % 10 == 0) {
         adaptiveScale += 0.05f;
-        adaptiveScale = std::min(2.0f, adaptiveScale);
+        adaptiveScale = adaptiveScale > 2.0f ? 2.0f : adaptiveScale;
     }
 }
 
@@ -74,11 +73,11 @@ void DifficultyManager:: reset() {
 void DifficultyManager::updateAdaptive(float playerHealthPercent, int currentScore) {
     if (playerHealthPercent < 0.3f) {
         adaptiveScale -= 0.01f;
-        adaptiveScale = std::max(0.5f, adaptiveScale);
+        adaptiveScale = adaptiveScale < 0.5f ? 0.5f : adaptiveScale;
     }
     
     if (playerHealthPercent > 0.8f && consecutiveKills > 15) {
         adaptiveScale += 0.01f;
-        adaptiveScale = std::min(2.0f, adaptiveScale);
+        adaptiveScale = adaptiveScale > 2.0f ? 2.0f : adaptiveScale;
     }
 }
