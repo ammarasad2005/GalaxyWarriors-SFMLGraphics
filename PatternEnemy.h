@@ -14,7 +14,7 @@ public:
     
     void updateMovementPattern(float deltaTime) override;
     void render(sf::RenderWindow& window) override;
-    void shoot(std:: vector<Projectile*>& projectiles) override;
+    void shoot(DynamicArray<Projectile*>& projectiles);
 };
 
 #endif
