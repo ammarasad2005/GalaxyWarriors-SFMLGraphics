@@ -2,7 +2,7 @@
 #define SCOREMANAGER_H
 
 #include <string>
-#include <vector>
+#include "DynamicArray.h"
 #include <fstream>
 #include "CustomException.h"
 
@@ -27,7 +27,7 @@ struct ScoreEntry {
 
 class ScoreManager {
 private: 
-    std::vector<ScoreEntry> highScores;
+    DynamicArray<ScoreEntry> highScores;
     const std::string filename;
     const int maxScores;
     
@@ -41,7 +41,7 @@ public:
     void saveScores();
     void addScore(const ScoreEntry& entry);
     
-    const std::vector<ScoreEntry>& getHighScores() const { return highScores; }
+    const DynamicArray<ScoreEntry>& getHighScores() const { return highScores; }
     bool isHighScore(int score) const;
     int getRank(int score) const;
     
