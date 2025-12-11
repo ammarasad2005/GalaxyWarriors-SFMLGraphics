@@ -6,7 +6,7 @@
 #include "PatternEnemy.h"
 #include "BossEnemy.h"
 #include "Asteroid.h"
-#include <vector>
+#include "DynamicArray.h"
 #include <cstdlib>
 
 class WaveManager {
@@ -36,8 +36,8 @@ public:
     ~WaveManager() {}
     
     void update(float deltaTime, 
-                std::vector<EnemyShip*>& enemies,
-                std::vector<Asteroid*>& asteroids);
+                DynamicArray<EnemyShip*>& enemies,
+                DynamicArray<Asteroid*>& asteroids);
     
     void startWave();
     void nextWave();
@@ -51,8 +51,8 @@ public:
     inline bool isActive() const { return waveActive; }
     
 private:
-    void spawnEnemy(std::vector<EnemyShip*>& enemies);
-    void spawnAsteroid(std::vector<Asteroid*>& asteroids);
+    void spawnEnemy(DynamicArray<EnemyShip*>& enemies);
+    void spawnAsteroid(DynamicArray<Asteroid*>& asteroids);
 };
 
 #endif
