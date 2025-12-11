@@ -2,33 +2,35 @@
 #define PARTICLESYSTEM_H
 
 #include "Particle.h"
-#include <vector>
+#include "DynamicArray.h"
 #include <cstdlib>
 
 // TEMPLATE (BONUS): Object pool pattern
 template<typename T>
 class ObjectPool {
 private:
-    std::vector<T> pool;
+    DynamicArray<T> pool;
     size_t nextAvailable;
     
 public:
     ObjectPool(size_t size) : nextAvailable(0) {
-        pool.resize(size);
+        for (size_t i = 0; i < size; i++) {
+            pool.pushBack(T());
+        }
     }
     
     T* getNext() {
-        for (size_t i = 0; i < pool.size(); i++) {
-            size_t index = (nextAvailable + i) % pool.size();
-            if (! pool[index].active) {
-                nextAvailable = (index + 1) % pool.size();
+        for (size_t i = 0; i < pool.getSize(); i++) {
+            size_t index = (nextAvailable + i) % pool.getSize();
+            if (!pool[index].active) {
+                nextAvailable = (index + 1) % pool.getSize();
                 return &pool[index];
             }
         }
         return nullptr;
     }
     
-    std::vector<T>& getAll() { return pool; }
+    DynamicArray<T>& getAll() { return pool; }
 };
 
 class ParticleSystem {
@@ -235,17 +237,19 @@ void ParticleSystem::createWarpEffect(sf::Vector2f position, sf::Color color) {
 }
 
 void ParticleSystem::update(float deltaTime) {
- for (Particle& p : particlePool.getAll()) {
-        if (p.active) {
-        p.update(deltaTime);
+    DynamicArray<Particle>& particles = particlePool.getAll();
+    for (int i = 0; i < particles.getSize(); i++) {
+        if (particles[i].active) {
+            particles[i].update(deltaTime);
         }
     }
 }
 
 void ParticleSystem::render(sf::RenderWindow& window) {
-    for (Particle& p : particlePool.getAll()) {
-      if (p.active) {
-    p.render(window);
-        }
+    DynamicArray<Particle>& particles = particlePool.getAll();
+    for (int i = 0; i < particles.getSize(); i++) {
+        if (particles[i].active) {
+   particles[i].render(window);
  }
+    }
 }

@@ -1,5 +1,4 @@
 #include "ScoreManager.h"
-#include <algorithm>
 #include <sstream>
 #include <ctime>
 #include <iomanip>
@@ -53,7 +52,7 @@ void ScoreManager::loadScores() {
                     std:: stoi(timeStr),
                     date
                 );
-                highScores.push_back(entry);
+                highScores.pushBack(entry);
             }
         } catch (const std::exception& e) {
             continue;
@@ -74,13 +73,13 @@ void ScoreManager::saveScores() {
     file << "PlayerName,Score,Time,Date\n";
     
     int count = 0;
-    for (const auto& entry : highScores) {
+    for (int i = 0; i < highScores.getSize(); i++) {
         if (count >= maxScores) break;
         
-        file << entry.playerName << ","
-             << entry.score << ","
-             << entry.timeSeconds << ","
-             << entry.date << "\n";
+        file << highScores[i].playerName << ","
+             << highScores[i].score << ","
+             << highScores[i].timeSeconds << ","
+             << highScores[i].date << "\n";
         
         count++;
     }
@@ -89,11 +88,12 @@ void ScoreManager::saveScores() {
 }
 
 void ScoreManager::addScore(const ScoreEntry& entry) {
-    highScores.push_back(entry);
+    highScores.pushBack(entry);
     sortScores();
     
-    if (highScores.size() > static_cast<size_t>(maxScores)) {
-        highScores.resize(maxScores);
+    // Remove excess scores
+    while (highScores.getSize() > maxScores) {
+        highScores.removeAt(highScores.getSize() - 1);
     }
     
     try {
@@ -104,16 +104,16 @@ void ScoreManager::addScore(const ScoreEntry& entry) {
 }
 
 bool ScoreManager::isHighScore(int score) const {
-    if (highScores.size() < static_cast<size_t>(maxScores)) {
+    if (highScores.getSize() < maxScores) {
         return true;
     }
-    return score > highScores. back().score;
+    return score > highScores[highScores.getSize() - 1].score;
 }
 
 int ScoreManager::getRank(int score) const {
     int rank = 1;
-    for (const auto& entry : highScores) {
-        if (score > entry.score) {
+    for (int i = 0; i < highScores.getSize(); i++) {
+        if (score > highScores[i].score) {
             return rank;
         }
         rank++;
@@ -122,7 +122,17 @@ int ScoreManager::getRank(int score) const {
 }
 
 void ScoreManager::sortScores() {
-    std::sort(highScores.begin(), highScores.end());
+    // Simple bubble sort for high scores (small dataset)
+    for (int i = 0; i < highScores.getSize() - 1; i++) {
+        for (int j = 0; j < highScores.getSize() - i - 1; j++) {
+            if (highScores[j].score < highScores[j + 1].score) {
+                // Swap
+                ScoreEntry temp = highScores[j];
+                highScores[j] = highScores[j + 1];
+                highScores[j + 1] = temp;
+            }
+        }
+    }
 }
 
 std::string ScoreManager::getCurrentDate() const {

@@ -7,7 +7,6 @@
 #include <ctime>
 #include <sstream>
 #include <iomanip>
-#include <algorithm>
 
 GameEngine::GameEngine()
     : window(sf::VideoMode(800, 600), "GALAXY WARS - Enhanced Edition", 
@@ -46,10 +45,10 @@ GameEngine::GameEngine()
 GameEngine::~GameEngine() {
     delete player;
     
-    for (auto* enemy : enemies) delete enemy;
-    for (auto* projectile : projectiles) delete projectile;
-    for (auto* asteroid : asteroids) delete asteroid;
-    for (auto* collectible : collectibles) delete collectible;
+    for (int i = 0; i < enemies.getSize(); i++) delete enemies[i];
+    for (int i = 0; i < projectiles.getSize(); i++) delete projectiles[i];
+    for (int i = 0; i < asteroids.getSize(); i++) delete asteroids[i];
+    for (int i = 0; i < collectibles.getSize(); i++) delete collectibles[i];
     
     achievementSystem.save("achievements.dat");
 }
@@ -255,11 +254,11 @@ void GameEngine::updatePlaying() {
     }
     
     // Update enemies
-    for (auto* enemy : enemies) {
-        if (enemy && enemy->isActive()) {
-            enemy->update(deltaTime);
+    for (int i = 0; i < enemies.getSize(); i++) {
+        if (enemies[i] && enemies[i]->isActive()) {
+            enemies[i]->update(deltaTime);
             
-            BossEnemy* boss = dynamic_cast<BossEnemy*>(enemy);
+            BossEnemy* boss = dynamic_cast<BossEnemy*>(enemies[i]);
             if (boss) {
                 if (boss->shouldShoot()) {
                     boss->shoot(projectiles);
@@ -275,31 +274,31 @@ void GameEngine::updatePlaying() {
                     }
                 }
             } else {
-                if (enemy->shouldShoot()) {
-                    enemy->shoot(projectiles);
+                if (enemies[i]->shouldShoot()) {
+                    enemies[i]->shoot(projectiles);
                 }
             }
         }
     }
     
     // Update projectiles
-    for (auto* projectile : projectiles) {
-        if (projectile && projectile->isActive()) {
-            projectile->update(deltaTime);
+    for (int i = 0; i < projectiles.getSize(); i++) {
+        if (projectiles[i] && projectiles[i]->isActive()) {
+            projectiles[i]->update(deltaTime);
         }
     }
     
     // Update asteroids
-    for (auto* asteroid : asteroids) {
-        if (asteroid && asteroid->isActive()) {
-            asteroid->update(deltaTime);
+    for (int i = 0; i < asteroids.getSize(); i++) {
+        if (asteroids[i] && asteroids[i]->isActive()) {
+            asteroids[i]->update(deltaTime);
         }
     }
     
     // Update collectibles
-    for (auto* collectible : collectibles) {
-        if (collectible && collectible->isActive()) {
-            collectible->update(deltaTime);
+    for (int i = 0; i < collectibles.getSize(); i++) {
+        if (collectibles[i] && collectibles[i]->isActive()) {
+            collectibles[i]->update(deltaTime);
         }
     }
     
@@ -308,8 +307,8 @@ void GameEngine::updatePlaying() {
     
     // Track kills
     size_t enemiesBeforeCollision = 0;
-    for (auto* enemy : enemies) {
-        if (enemy && enemy->isActive()) enemiesBeforeCollision++;
+    for (int i = 0; i < enemies.getSize(); i++) {
+        if (enemies[i] && enemies[i]->isActive()) enemiesBeforeCollision++;
     }
     
     // Collision detection
@@ -318,8 +317,8 @@ void GameEngine::updatePlaying() {
     );
     
     size_t enemiesAfterCollision = 0;
-    for (auto* enemy : enemies) {
-        if (enemy && enemy->isActive()) enemiesAfterCollision++;
+    for (int i = 0; i < enemies.getSize(); i++) {
+        if (enemies[i] && enemies[i]->isActive()) enemiesAfterCollision++;
     }
     
     int killsThisFrame = enemiesBeforeCollision - enemiesAfterCollision;
@@ -329,8 +328,8 @@ void GameEngine::updatePlaying() {
     }
     
     // Check boss defeat
-    for (auto* enemy : enemies) {
-        BossEnemy* boss = dynamic_cast<BossEnemy*>(enemy);
+    for (int i = 0; i < enemies.getSize(); i++) {
+        BossEnemy* boss = dynamic_cast<BossEnemy*>(enemies[i]);
         if (boss && boss->isDead()) {
             achievementSystem.onBossDefeated();
             
@@ -440,27 +439,27 @@ void GameEngine:: render() {
 void GameEngine:: renderPlaying() {
     particleSystem.render(window);
     
-    for (auto* asteroid : asteroids) {
-        if (asteroid && asteroid->isActive()) {
-            asteroid->render(window);
+    for (int i = 0; i < asteroids.getSize(); i++) {
+        if (asteroids[i] && asteroids[i]->isActive()) {
+            asteroids[i]->render(window);
         }
     }
     
-    for (auto* collectible : collectibles) {
-        if (collectible && collectible->isActive()) {
-            collectible->render(window);
+    for (int i = 0; i < collectibles.getSize(); i++) {
+        if (collectibles[i] && collectibles[i]->isActive()) {
+            collectibles[i]->render(window);
         }
     }
     
-    for (auto* projectile : projectiles) {
-        if (projectile && projectile->isActive()) {
-            projectile->render(window);
+    for (int i = 0; i < projectiles.getSize(); i++) {
+        if (projectiles[i] && projectiles[i]->isActive()) {
+            projectiles[i]->render(window);
         }
     }
     
-    for (auto* enemy : enemies) {
-        if (enemy && enemy->isActive()) {
-            enemy->render(window);
+    for (int i = 0; i < enemies.getSize(); i++) {
+        if (enemies[i] && enemies[i]->isActive()) {
+            enemies[i]->render(window);
         }
     }
     
@@ -549,7 +548,7 @@ void GameEngine::renderHighScores() {
     drawText("HIGH SCORES", 400, 50, 50, sf::Color::Yellow, true);
     
     const auto& scores = scoreManager.getHighScores();
-    int displayCount = std::min(10, static_cast<int>(scores. size()));
+    int displayCount = std::min(10, static_cast<int>(scores.getSize()));
     
     float startY = 120;
     for (int i = 0; i < displayCount; i++) {
@@ -572,7 +571,7 @@ void GameEngine::renderHighScores() {
         drawText(ss.str(), 600, y, 18, sf::Color::Green, false);
     }
     
-    if (scores.empty()) {
+    if (scores.isEmpty()) {
         drawText("No scores yet!", 400, 300, 30, sf::Color(150, 150, 150), true);
     }
     
@@ -702,16 +701,16 @@ void GameEngine::resetGame() {
     delete player;
     player = nullptr;
     
-    for (auto* enemy : enemies) delete enemy;
+    for (int i = 0; i < enemies.getSize(); i++) delete enemies[i];
     enemies.clear();
     
-    for (auto* projectile : projectiles) delete projectile;
+    for (int i = 0; i < projectiles.getSize(); i++) delete projectiles[i];
     projectiles.clear();
     
-    for (auto* asteroid : asteroids) delete asteroid;
+    for (int i = 0; i < asteroids.getSize(); i++) delete asteroids[i];
     asteroids.clear();
     
-    for (auto* collectible : collectibles) delete collectible;
+    for (int i = 0; i < collectibles.getSize(); i++) delete collectibles[i];
     collectibles.clear();
     
     currentLevel = 1;
@@ -734,10 +733,10 @@ void GameEngine::nextLevel() {
         return;
     }
     
-    for (auto* enemy : enemies) delete enemy;
+    for (int i = 0; i < enemies.getSize(); i++) delete enemies[i];
     enemies.clear();
     
-    for (auto* projectile : projectiles) delete projectile;
+    for (int i = 0; i < projectiles.getSize(); i++) delete projectiles[i];
     projectiles.clear();
     
     waveManager.setLevel(currentLevel);
@@ -775,7 +774,7 @@ void GameEngine::spawnPowerUp() {
     
     PowerUp:: Type type = static_cast<PowerUp::Type>(rand() % 4);
     
-    collectibles.push_back(new PowerUp(x, y, type));
+    collectibles.pushBack(new PowerUp(x, y, type));
 }
 
 void GameEngine::spawnResource() {
@@ -784,57 +783,49 @@ void GameEngine::spawnResource() {
     
     Resource:: Type type = static_cast<Resource::Type>(rand() % 3);
     
-    collectibles. push_back(new Resource(x, y, type));
+    collectibles.pushBack(new Resource(x, y, type));
 }
 
 void GameEngine::cleanupEntities() {
-    enemies.erase(
-        std::remove_if(enemies.begin(), enemies.end(),
-            [](EnemyShip* e) {
-                if (! e->isActive()) {
-                    delete e;
-                    return true;
-                }
-                return false;
-            }),
-        enemies.end()
-    );
+    // Clean up enemies
+    for (int i = 0; i < enemies.getSize();) {
+        if (!enemies[i]->isActive()) {
+            delete enemies[i];
+            enemies.removeAt(i);
+        } else {
+            i++;
+        }
+    }
     
-    projectiles.erase(
-        std::remove_if(projectiles.begin(), projectiles.end(),
-            [](Projectile* p) {
-                if (!p->isActive()) {
-                    delete p;
-                    return true;
-                }
-                return false;
-            }),
-        projectiles.end()
-    );
+    // Clean up projectiles
+    for (int i = 0; i < projectiles.getSize();) {
+        if (!projectiles[i]->isActive()) {
+            delete projectiles[i];
+            projectiles.removeAt(i);
+        } else {
+            i++;
+        }
+    }
     
-    asteroids.erase(
-        std:: remove_if(asteroids.begin(), asteroids.end(),
-            [](Asteroid* a) {
-                if (!a->isActive()) {
-                    delete a;
-                    return true;
-                }
-                return false;
-            }),
-        asteroids.end()
-    );
+    // Clean up asteroids
+    for (int i = 0; i < asteroids.getSize();) {
+        if (!asteroids[i]->isActive()) {
+            delete asteroids[i];
+            asteroids.removeAt(i);
+        } else {
+            i++;
+        }
+    }
     
-    collectibles.erase(
-        std::remove_if(collectibles. begin(), collectibles.end(),
-            [](Collectible* c) {
-                if (!c->isActive()) {
-                    delete c;
-                    return true;
-                }
-                return false;
-            }),
-        collectibles. end()
-    );
+    // Clean up collectibles
+    for (int i = 0; i < collectibles.getSize();) {
+        if (!collectibles[i]->isActive()) {
+            delete collectibles[i];
+            collectibles.removeAt(i);
+        } else {
+            i++;
+        }
+    }
 }
 
 void GameEngine::initStars() {
@@ -854,27 +845,27 @@ void GameEngine::initStars() {
             }
             star.color = sf::Color(brightness, brightness, brightness + 20);
     
-            stars.push_back(star);
+            stars.pushBack(star);
         }
     }
 }
 
 void GameEngine::updateStars() {
-    for (auto& star : stars) {
-        star.position. y += star.speed * deltaTime;
+    for (int i = 0; i < stars.getSize(); i++) {
+        stars[i].position.y += stars[i].speed * deltaTime;
         
-        if (star.position.y > 600) {
-            star.position.y = 0;
-            star.position.x = rand() % 800;
+        if (stars[i].position.y > 600) {
+            stars[i].position.y = 0;
+            stars[i].position.x = rand() % 800;
         }
     }
 }
 
 void GameEngine::renderStars() {
-    for (const auto& star : stars) {
-        sf::CircleShape starShape(star.size);
-        starShape.setPosition(star.position);
-        starShape.setFillColor(star.color);
+    for (int i = 0; i < stars.getSize(); i++) {
+        sf::CircleShape starShape(stars[i].size);
+        starShape.setPosition(stars[i].position);
+        starShape.setFillColor(stars[i].color);
         window.draw(starShape);
     }
 }

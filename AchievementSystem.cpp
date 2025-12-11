@@ -70,64 +70,64 @@ AchievementSystem:: AchievementSystem()
 void AchievementSystem::initializeAchievements() {
     ColorPalette* palette = ColorPalette::getInstance();
     
-    achievements.push_back(Achievement(
+    achievements.pushBack(Achievement(
         "first_blood", "First Blood", 
-        "Defeat your first enemy", 1, sf::Color::   Cyan
+        "Defeat your first enemy", 1, sf::Color::Cyan
     ));
     
-    achievements.push_back(Achievement(
+    achievements.pushBack(Achievement(
         "exterminator", "Exterminator",
-        "Defeat 100 enemies", 100, sf::Color:: Red
+        "Defeat 100 enemies", 100, sf::Color::Red
     ));
     
-    achievements.push_back(Achievement(
+    achievements.pushBack(Achievement(
         "ace_pilot", "Ace Pilot",
-        "Defeat 500 enemies", 500, sf::   Color::Yellow
+        "Defeat 500 enemies", 500, sf::Color::Yellow
     ));
     
-    achievements.push_back(Achievement(
+    achievements.pushBack(Achievement(
         "combo_master", "Combo Master",
         "Reach a 25x combo", 25, sf::Color(255, 165, 0)
     ));
     
-    achievements.push_back(Achievement(
+    achievements.pushBack(Achievement(
         "unstoppable", "Unstoppable",
-        "Reach a 50x combo", 50, sf::Color::   Magenta
+        "Reach a 50x combo", 50, sf::Color::Magenta
     ));
     
-    achievements.push_back(Achievement(
-        "high_scorer", "High Scorer",
-        "Score 10,000 points", 10000, palette->getUIAccent()
+    achievements.pushBack(Achievement(
+     "high_scorer", "High Scorer",
+     "Score 10,000 points", 10000, palette->getUIAccent()
     ));
     
-    achievements.push_back(Achievement(
-        "legend", "Legend",
+    achievements.pushBack(Achievement(
+      "legend", "Legend",
         "Score 50,000 points", 50000, sf::Color(255, 215, 0)
     ));
     
-    achievements.push_back(Achievement(
+    achievements.pushBack(Achievement(
         "sharpshooter", "Sharpshooter",
-        "Fire 1000 shots", 1000, sf::Color::  Cyan
+        "Fire 1000 shots", 1000, sf::Color::Cyan
     ));
     
-    achievements.push_back(Achievement(
+    achievements.pushBack(Achievement(
         "collector", "Collector",
         "Collect 50 power-ups", 50, palette->getPowerUpShield()
     ));
     
-    achievements.push_back(Achievement(
-        "perfectionist", "Perfectionist",
-        "Complete 10 waves without taking damage", 10, sf::Color::   Green
+    achievements.pushBack(Achievement(
+"perfectionist", "Perfectionist",
+        "Complete 10 waves without taking damage", 10, sf::Color::Green
     ));
     
-    achievements.push_back(Achievement(
+    achievements.pushBack(Achievement(
         "boss_slayer", "Boss Slayer",
-        "Defeat a boss enemy", 1, sf::Color::   Red
+  "Defeat a boss enemy", 1, sf::Color::Red
     ));
     
-    achievements.push_back(Achievement(
+    achievements.pushBack(Achievement(
         "survivor", "Survivor",
-        "Complete all 3 levels", 3, sf::Color(255, 215, 0)
+     "Complete all 3 levels", 3, sf::Color(255, 215, 0)
     ));
 }
 
@@ -140,11 +140,11 @@ void AchievementSystem:: onEnemyKilled() {
     checkAchievement("ace_pilot");
     
     int combo = comboSystem.getCurrentCombo();
-    for (auto& achievement : achievements) {
-        if (achievement.id == "combo_master" || achievement.id == "unstoppable") {
-            if (combo >= achievement.targetValue) {
-                achievement.currentValue = combo;
-                achievement.checkUnlock();
+    for (int i = 0; i < achievements.getSize(); i++) {
+        if (achievements[i].id == "combo_master" || achievements[i].id == "unstoppable") {
+            if (combo >= achievements[i].targetValue) {
+                achievements[i].currentValue = combo;
+                achievements[i].checkUnlock();
             }
         }
     }
@@ -179,42 +179,42 @@ void AchievementSystem::onBossDefeated() {
 }
 
 void AchievementSystem::onLevelCompleted(int level) {
-    for (auto& achievement : achievements) {
-        if (achievement.id == "survivor") {
-            achievement.currentValue = level;
-            achievement.checkUnlock();
+    for (int i = 0; i < achievements.getSize(); i++) {
+        if (achievements[i].id == "survivor") {
+            achievements[i].currentValue = level;
+            achievements[i].checkUnlock();
         }
     }
 }
 
 void AchievementSystem::checkAchievement(const std::string& id) {
-    for (auto& achievement : achievements) {
-        if (achievement.id == id && ! achievement.unlocked) {
+    for (int i = 0; i < achievements.getSize(); i++) {
+        if (achievements[i].id == id && !achievements[i].unlocked) {
             if (id == "first_blood" || id == "exterminator" || id == "ace_pilot") {
-                achievement.currentValue = totalKills;
-            } else if (id == "high_scorer" || id == "legend") {
-                achievement.currentValue = totalScore;
-            } else if (id == "sharpshooter") {
-                achievement.currentValue = totalShots;
-            } else if (id == "collector") {
-                achievement.currentValue = powerUpsCollected;
-            } else if (id == "perfectionist") {
-                achievement.currentValue = perfectWaves;
-            } else if (id == "boss_slayer") {
-                achievement.currentValue = bossesDefeated;
-            }
+        achievements[i].currentValue = totalKills;
+      } else if (id == "high_scorer" || id == "legend") {
+          achievements[i].currentValue = totalScore;
+   } else if (id == "sharpshooter") {
+   achievements[i].currentValue = totalShots;
+     } else if (id == "collector") {
+       achievements[i].currentValue = powerUpsCollected;
+    } else if (id == "perfectionist") {
+                achievements[i].currentValue = perfectWaves;
+    } else if (id == "boss_slayer") {
+         achievements[i].currentValue = bossesDefeated;
+        }
             
-            if (achievement.  checkUnlock()) {
-                unlockAchievement(id);
-            }
+       if (achievements[i].checkUnlock()) {
+       unlockAchievement(id);
+     }
         }
     }
 }
 
 void AchievementSystem::unlockAchievement(const std::string& id) {
-    for (const auto& achievement : achievements) {
-        if (achievement.id == id) {
-            recentUnlocks.push_back(id);
+    for (int i = 0; i < achievements.getSize(); i++) {
+        if (achievements[i].id == id) {
+            recentUnlocks.pushBack(id);
             notificationTimer = 0;
             break;
         }
@@ -223,8 +223,8 @@ void AchievementSystem::unlockAchievement(const std::string& id) {
 
 int AchievementSystem::getUnlockedCount() const {
     int count = 0;
-    for (const auto& achievement : achievements) {
-        if (achievement.unlocked) count++;
+    for (int i = 0; i < achievements.getSize(); i++) {
+        if (achievements[i].unlocked) count++;
     }
     return count;
 }
@@ -232,22 +232,22 @@ int AchievementSystem::getUnlockedCount() const {
 void AchievementSystem::update(float deltaTime) {
     comboSystem.update(deltaTime);
     
-    if (!  recentUnlocks.empty()) {
+    if (!recentUnlocks.isEmpty()) {
         notificationTimer += deltaTime;
         if (notificationTimer >= 4.0f) {
-            recentUnlocks.erase(recentUnlocks.begin());
+            recentUnlocks.removeAt(0);
             notificationTimer = 0;
         }
     }
 }
 
-void AchievementSystem:: renderNotifications(sf::RenderWindow& window) {
-    if (recentUnlocks.empty()) return;
+void AchievementSystem::renderNotifications(sf::RenderWindow& window) {
+    if (recentUnlocks.isEmpty()) return;
     
     const Achievement* unlocked = nullptr;
-    for (const auto& achievement : achievements) {
-        if (achievement.id == recentUnlocks[0]) {
-            unlocked = &achievement;
+    for (int i = 0; i < achievements.getSize(); i++) {
+        if (achievements[i].id == recentUnlocks[0]) {
+            unlocked = &achievements[i];
             break;
         }
     }
@@ -299,10 +299,10 @@ void AchievementSystem:: save(const std::string& filename) {
     std::ofstream file(filename);
     if (!file.is_open()) return;
     
-    for (const auto& achievement : achievements) {
-        file << achievement.id << ","
-             << achievement.currentValue << ","
-             << achievement.unlocked << "\n";
+    for (int i = 0; i < achievements.getSize(); i++) {
+        file << achievements[i].id << ","
+             << achievements[i].currentValue << ","
+             << achievements[i].unlocked << "\n";
     }
     
     file.close();
@@ -312,7 +312,7 @@ void AchievementSystem::load(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) return;
     
-    std::  string line;
+    std::string line;
     while (std::getline(file, line)) {
         std::stringstream ss(line);
         std::string id, currentStr, unlockedStr;
@@ -321,10 +321,10 @@ void AchievementSystem::load(const std::string& filename) {
         std::getline(ss, currentStr, ',');
         std::getline(ss, unlockedStr, ',');
         
-        for (auto& achievement : achievements) {
-            if (achievement.id == id) {
-                achievement.currentValue = std::stoi(currentStr);
-                achievement.unlocked = (unlockedStr == "1");
+        for (int i = 0; i < achievements.getSize(); i++) {
+            if (achievements[i].id == id) {
+                achievements[i].currentValue = std::stoi(currentStr);
+                achievements[i].unlocked = (unlockedStr == "1");
                 break;
             }
         }

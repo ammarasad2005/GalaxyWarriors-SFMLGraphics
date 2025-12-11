@@ -17,7 +17,7 @@ private:
     float transitionDuration;
     
     std::unique_ptr<AttackPattern> currentAttackPattern;
-    std::vector<std::unique_ptr<AttackPattern>> phaseAttackPatterns;
+    DynamicArray<std::unique_ptr<AttackPattern>> phaseAttackPatterns;
     
     float shieldRotation;
     float energyPulse;
@@ -33,7 +33,7 @@ private:
         float fireRateMultiplier;
         int attackPatternIndex;
     };
-    std::vector<PhaseData> phases;
+    DynamicArray<PhaseData> phases;
     
 public:
     BossEnemy(float x, float y);
@@ -41,7 +41,7 @@ public:
     
     void updateMovementPattern(float deltaTime) override;
     void render(sf::RenderWindow& window) override;
-    void shoot(std::vector<Projectile*>& projectiles) override;
+    void shoot(DynamicArray<Projectile*>& projectiles) override;
     void takeDamage(float damage) override;
     void update(float deltaTime) override;
     

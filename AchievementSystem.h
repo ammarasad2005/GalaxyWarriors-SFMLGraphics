@@ -2,8 +2,7 @@
 #define ACHIEVEMENTSYSTEM_H
 
 #include <string>
-#include <vector>
-#include <map>
+#include "DynamicArray.h"
 #include <SFML/Graphics.hpp>
 
 struct Achievement {
@@ -15,6 +14,12 @@ struct Achievement {
     bool unlocked;
     sf::Color color;
     
+    // Default constructor
+    Achievement() 
+        : id(""), name(""), description(""), 
+          targetValue(0), currentValue(0), 
+          unlocked(false), color(sf::Color::Yellow) {}
+ 
     Achievement(const std::string& id, const std::string& n, 
                 const std::string& desc, int target, sf::Color col = sf::Color::Yellow)
         : id(id), name(n), description(desc), 
@@ -63,8 +68,8 @@ public:
 
 class AchievementSystem {
 private:  
-    std::vector<Achievement> achievements;
-    std::vector<std::string> recentUnlocks;
+    DynamicArray<Achievement> achievements;
+    DynamicArray<std::string> recentUnlocks;
     float notificationTimer;
     ComboSystem comboSystem;
     
@@ -90,16 +95,16 @@ public:
     
     ComboSystem& getComboSystem() { return comboSystem; }
     
-    const std::vector<Achievement>& getAchievements() const { return achievements; }
+    const DynamicArray<Achievement>& getAchievements() const { return achievements; }
     int getUnlockedCount() const;
-    int getTotalCount() const { return achievements.size(); }
+    int getTotalCount() const { return achievements.getSize(); }
     
     void update(float deltaTime);
     void renderNotifications(sf::RenderWindow& window);
     void renderComboCounter(sf::RenderWindow& window, sf::Vector2f position);
     
     void save(const std::string& filename);
-    void load(const std:: string& filename);
+    void load(const std::string& filename);
     
 private:
     void checkAchievement(const std::string& id);

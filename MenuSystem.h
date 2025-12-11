@@ -2,7 +2,7 @@
 #define MENUSYSTEM_H
 
 #include <SFML/Graphics.hpp>
-#include <vector>
+#include "DynamicArray.h"
 #include <string>
 #include "ColorPalette.h"
 
@@ -13,6 +13,13 @@ struct MenuButton {
     sf::Color normalColor;
     sf::Color highlightColor;
     int actionId;
+    
+    // Default constructor
+    MenuButton() 
+        : bounds(0, 0, 0, 0), text(""), highlighted(false),
+          normalColor(sf::Color(40, 40, 80)),
+          highlightColor(sf::Color(80, 80, 150)),
+          actionId(0) {}
     
     MenuButton(float x, float y, float w, float h, const std::string& txt, int id)
      : bounds(x, y, w, h), 
@@ -34,6 +41,11 @@ struct ThemeCard {
     std::string description;
     bool selected;
     bool hovered;
+    
+    // Default constructor
+    ThemeCard() 
+        : theme(ColorPalette::NEON_CYBER), bounds(0, 0, 0, 0), 
+   name(""), description(""), selected(false), hovered(false) {}
     
     ThemeCard(ColorPalette::Theme t, float x, float y, float w, float h)
         : theme(t), bounds(x, y, w, h), selected(false), hovered(false) {
@@ -69,8 +81,8 @@ case ColorPalette::TOXIC_WASTE:
 
 class MenuSystem {
 private:
-    std::vector<MenuButton> mainMenuButtons;
-    std::vector<ThemeCard> themeCards;
+    DynamicArray<MenuButton> mainMenuButtons;
+    DynamicArray<ThemeCard> themeCards;
     int selectedThemeIndex;
     bool inThemeSelection;
     float animationTimer;
@@ -82,7 +94,7 @@ private:
         float life;
         float size;
     };
-    std::vector<MenuParticle> menuParticles;
+    DynamicArray<MenuParticle> menuParticles;
     
 public:
     MenuSystem();
