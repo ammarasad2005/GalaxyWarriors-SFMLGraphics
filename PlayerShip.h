@@ -30,7 +30,7 @@ public:
     // POLYMORPHISM: Override pure virtual functions
     void update(float deltaTime) override;
     void render(sf::RenderWindow& window) override;
-    void shoot(std::vector<Projectile*>& projectiles) override;
+    void shoot(DynamicArray<Projectile*>& projectiles) override;
     void onCollision(GameObject* other) override;
     
     // Player-specific methods
