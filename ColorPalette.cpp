@@ -1,5 +1,4 @@
 #include "ColorPalette.h"
-#include <algorithm>
 
 // STATIC MEMBER initialization
 ColorPalette* ColorPalette::instance = nullptr;
@@ -118,18 +117,20 @@ void ColorPalette:: setTheme(Theme theme) {
 }
 
 sf::Color ColorPalette::get(const std::string& name) const {
-    auto it = colors.find(name);
-    if (it != colors. end()) {
-        return it->second;
+    sf::Color* it = colors.find(name);
+    if (it != nullptr) {
+ return *it;
     }
     return sf::Color::White; // Fallback
 }
 
 sf::Color ColorPalette::blend(const sf::Color& a, const sf::Color& b, float ratio) {
-    ratio = std::max(0.0f, std::min(1.0f, ratio));
+    // Clamp ratio between 0 and 1
+    if (ratio < 0.0f) ratio = 0.0f;
+    if (ratio > 1.0f) ratio = 1.0f;
     return sf::Color(
         a.r + (b.r - a.r) * ratio,
-        a.g + (b. g - a.g) * ratio,
+        a.g + (b.g - a.g) * ratio,
         a.b + (b.b - a.b) * ratio,
         a.a + (b.a - a.a) * ratio
     );
