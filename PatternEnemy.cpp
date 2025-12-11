@@ -5,7 +5,7 @@
 #include <cstdlib>
 
 PatternEnemy::PatternEnemy(float x, float y)
-    : EnemyShip(x, y, 50.0f, 28.0f, sf::Color:: Yellow, 3.0f, 80.0f, 200),
+    : EnemyShip(x, y, 50.0f, 28.0f, sf::Color::Yellow, 3.0f, 80.0f, 200),
       time(0),
       patternType(1 + (rand() % 5)) {
     
@@ -128,12 +128,12 @@ void PatternEnemy::render(sf::RenderWindow& window) {
     }
 }
 
-void PatternEnemy::shoot(std::vector<Projectile*>& projectiles) {
-    if (!canShoot() || !active) return;
+void PatternEnemy::shoot(DynamicArray<Projectile*>& projectiles) {
+    if (!Ship::canShoot() || !active) return;
     
-    projectiles.push_back(new EnemyBullet(
+    projectiles.pushBack(new EnemyBullet(
         position.x, position.y + size/2, 0, 1
     ));
     
-    resetCooldown();
+    Ship::resetCooldown();
 }
