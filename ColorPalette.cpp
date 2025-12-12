@@ -61,7 +61,7 @@ void ColorPalette:: setTheme(Theme theme) {
         boss = sf::Color(255, 50, 0);
         powerup_shield = sf::Color(255, 220, 100);
         powerup_fire = sf::Color(255, 100, 50);
-        powerup_repair = sf:: Color(100, 255, 100);
+        powerup_repair = sf::Color(100, 255, 100);
         powerup_speed = sf::Color(255, 255, 150);
         explosion_core = sf::Color(255, 255, 200);
         explosion_outer = sf::Color(255, 150, 50);
@@ -78,7 +78,7 @@ void ColorPalette:: setTheme(Theme theme) {
         boss = sf::Color(150, 50, 150);
         powerup_shield = sf::Color(100, 255, 200);
         powerup_fire = sf::Color(255, 255, 50);
-        powerup_repair = sf:: Color(150, 255, 150);
+        powerup_repair = sf::Color(150, 255, 150);
         powerup_speed = sf::Color(200, 255, 100);
         explosion_core = sf::Color(200, 255, 100);
         explosion_outer = sf::Color(100, 200, 50);
@@ -94,8 +94,8 @@ void ColorPalette:: setTheme(Theme theme) {
         enemy_pattern = sf::Color(150, 100, 200);
         boss = sf::Color(120, 50, 200);
         powerup_shield = sf::Color(180, 150, 255);
-        powerup_fire = sf:: Color(255, 100, 150);
-        powerup_repair = sf:: Color(100, 255, 200);
+        powerup_fire = sf::Color(255, 100, 150);
+        powerup_repair = sf::Color(100, 255, 200);
         powerup_speed = sf::Color(255, 215, 100);
         explosion_core = sf::Color(255, 230, 180);
         explosion_outer = sf::Color(180, 100, 255);
@@ -154,11 +154,11 @@ sf::Color ColorPalette::blend(const sf::Color& a, const sf::Color& b, float rati
 }
 
 sf::Color ColorPalette::lighten(const sf::Color& color, float amount) {
-    return blend(color, sf::Color:: White, amount);
+    return blend(color, sf::Color::White, amount);
 }
 
 sf::Color ColorPalette::darken(const sf::Color& color, float amount) {
-    return blend(color, sf::Color:: Black, amount);
+    return blend(color, sf::Color::Black, amount);
 }
 
 sf::Color ColorPalette::withAlpha(const sf::Color& color, sf::Uint8 alpha) {
@@ -172,7 +172,7 @@ sf::Color ColorPalette::getPlayerPrimary() const { return get("player_primary");
 sf::Color ColorPalette::getPlayerSecondary() const { return get("player_secondary"); }
 sf::Color ColorPalette::getEnemyBasicPrimary() const { return get("enemy_basic"); }
 sf::Color ColorPalette::getEnemyPatternPrimary() const { return get("enemy_pattern"); }
-sf::Color ColorPalette:: getBossPrimary() const { return get("boss"); }
+sf::Color ColorPalette::getBossPrimary() const { return get("boss"); }
 sf::Color ColorPalette::getPowerUpShield() const { return get("powerup_shield"); }
 sf::Color ColorPalette::getPowerUpFire() const { return get("powerup_fire"); }
 sf::Color ColorPalette::getPowerUpRepair() const { return get("powerup_repair"); }
@@ -180,4 +180,4 @@ sf::Color ColorPalette::getPowerUpSpeed() const { return get("powerup_speed"); }
 sf::Color ColorPalette::getExplosionCore() const { return get("explosion_core"); }
 sf::Color ColorPalette::getExplosionOuter() const { return get("explosion_outer"); }
 sf::Color ColorPalette::getStarfield() const { return get("starfield"); }
-sf::Color ColorPalette:: getUIAccent() const { return get("ui_accent"); }
+sf::Color ColorPalette::getUIAccent() const { return get("ui_accent"); }
