@@ -2,7 +2,6 @@
 #define COLORPALETTE_H
 
 #include <SFML/Graphics.hpp>
-#include "HashMap.h"
 #include <string>
 
 // SINGLETON PATTERN: Global color management
@@ -11,7 +10,23 @@ private:
     // STATIC MEMBER:  Single instance
     static ColorPalette* instance;
     
-    HashMap<std::string, sf::Color> colors;
+    // Direct color storage for current theme
+    sf::Color player_primary;
+    sf::Color player_secondary;
+    sf::Color player_trail;
+    sf::Color enemy_basic;
+    sf::Color enemy_pattern;
+    sf::Color boss;
+    sf::Color powerup_shield;
+    sf::Color powerup_fire;
+    sf::Color powerup_repair;
+    sf::Color powerup_speed;
+    sf::Color explosion_core;
+    sf::Color explosion_outer;
+    sf::Color starfield;
+    sf::Color ui_accent;
+    sf::Color background;
+    
     int currentTheme;
     
     // Private constructor for singleton
